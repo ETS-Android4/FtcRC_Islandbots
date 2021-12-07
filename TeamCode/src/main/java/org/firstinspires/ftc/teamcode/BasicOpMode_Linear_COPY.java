@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -61,6 +62,9 @@ public class BasicOpMode_Linear_COPY extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor DuckWheel = null;
+    private DcMotor Intake = null;
+    private Servo Box = null;
 
     @Override
     public void runOpMode() {
@@ -76,6 +80,9 @@ public class BasicOpMode_Linear_COPY extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "RFmotor");
         leftBackDrive = hardwareMap.get(DcMotor.class, "LBmotor");
         rightBackDrive = hardwareMap.get(DcMotor.class, "RBmotor");
+        DuckWheel = hardwareMap.get(DcMotor.class, "DuckWheel");
+        Intake = hardwareMap.get(DcMotor.class, "Intake");
+        Box = hardwareMap.get(Servo.class, "Box");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
