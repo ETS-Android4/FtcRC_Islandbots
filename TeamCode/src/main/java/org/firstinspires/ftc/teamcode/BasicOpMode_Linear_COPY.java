@@ -64,6 +64,7 @@ public class BasicOpMode_Linear_COPY extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor DuckWheel = null;
     private DcMotor Intake = null;
+    private DcMotor LinearSlide = null;
     private Servo Box = null;
 
     @Override
@@ -82,6 +83,7 @@ public class BasicOpMode_Linear_COPY extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "RBmotor");
         DuckWheel = hardwareMap.get(DcMotor.class, "DuckWheel");
         Intake = hardwareMap.get(DcMotor.class, "Intake");
+        LinearSlide = hardwareMap.get(DcMotor.class, "LinearSlide");
         Box = hardwareMap.get(Servo.class, "Box");
 
         // Most robots need the motor on one side to be reversed to drive forward
