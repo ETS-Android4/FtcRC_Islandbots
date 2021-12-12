@@ -37,20 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.robot.CompetitionBot;
-
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import org.firstinspires.ftc.teamcode.robot.GamepadButton;
 
 @TeleOp(name="TeleOpBot", group="Linear Opmode")
 //@Disabled
@@ -60,14 +47,52 @@ public class TeleOpBot extends LinearOpMode {
     public void runOpMode() {
         CompetitionBot robot = new CompetitionBot(hardwareMap, telemetry);
 
+        GamepadButton intakeButton = new GamepadButton(300, false);
+        GamepadButton depositButton = new GamepadButton(300, false);
+        GamepadButton duckButton = new GamepadButton(300, false);
+
         waitForStart();
 
         while (opModeIsActive()) {
 
+            // Gamepad 1: Driving
             double motion = gamepad1.left_stick_y;
             double rotation = gamepad1.right_stick_x;
 
+            // Gamepad 2: Utility
+            boolean intakeBool = gamepad2.a;
+
+            boolean depositBool = gamepad2.b;
+
+            boolean duckBool = gamepad2.y;
+
+            double slide = gamepad2.left_stick_y;
+//            boolean slideUpBool = gamepad2.dpad_up;
+//            boolean slideDownBool = gamepad2.dpad_down;
+
+            // Button Updates
+            intakeButton.checkStatus(intakeBool);
+            depositButton.checkStatus(depositBool);
+            duckButton.checkStatus(duckBool);
+
+            // Motion
             robot.tankMove(motion, rotation, telemetry);
+
+            // Intake
+            if (intakeButton.pressed) robot.Intake.setPower(CompetitionBot.INTAKE_POWER);
+            else robot.Intake.setPower(0);
+
+            // Deposit
+            if (depositButton.pressed) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
+            else robot.BoxServo.setPosition(CompetitionBot.BOX_IN);
+
+            // Ducks
+            if (duckButton.pressed) robot.Intake.setPower(CompetitionBot.DUCK_POWER);
+            else robot.Intake.setPower(0);
+
+            // Linear Slide
+            if (slide>.1) robot.LinearSlide.setPower(slide);
+            else robot.LinearSlide.setPower(0);
         }
     }
 }

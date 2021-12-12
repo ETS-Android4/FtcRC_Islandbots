@@ -8,18 +8,27 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class CompetitionBot {
 
-    // motors
+    // Motors
     public DcMotor RFmotor, RBmotor, LFmotor, LBmotor;
     public DcMotor DuckWheel, Intake, LinearSlide;
 
-    // servos
+    // Servos
     public Servo BoxServo;
 
-    // constants
+    // Constants
     public static final double MAX_SPEED = 0.7;
 
+    public static final double DUCK_POWER = 0.5;
+
+    public static final double INTAKE_POWER = 0.5;
+
+    public static final double BOX_IN = 0.05;
+    public static final double BOX_OUT = 0.5;
+
+    public static final double[] SLIDE_STAGES = {};
+
     public CompetitionBot(HardwareMap hwMap, Telemetry telemetry) {
-        // motors
+        // Hardware Declarations
         RFmotor = hwMap.dcMotor.get("RFmotor");
         RBmotor = hwMap.dcMotor.get("RBmotor");
         LFmotor = hwMap.dcMotor.get("LFmotor");
@@ -31,9 +40,12 @@ public class CompetitionBot {
 
         BoxServo = hwMap.servo.get("Box");
 
-        // directions
+        // Drive Train Directions
         RFmotor.setDirection(DcMotor.Direction.REVERSE);
         RBmotor.setDirection(DcMotor.Direction.REVERSE);
+
+        // Servo Initial Positions
+
 
         telemetry.addData("Status", "Successfully Initialized");
         telemetry.update();
