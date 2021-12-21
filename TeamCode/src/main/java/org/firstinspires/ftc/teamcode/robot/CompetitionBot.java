@@ -18,12 +18,14 @@ public class CompetitionBot {
     // Constants
     public static final double MAX_SPEED = 0.7;
 
-    public static final double DUCK_POWER = 0.5;
+    public static final double DUCK_POWER = 0.7;
 
-    public static final double INTAKE_POWER = 0.5;
+    public static final double INTAKE_POWER = 1;
 
-    public static final double BOX_IN = 0.05;
-    public static final double BOX_OUT = 0.5;
+    public static final double BOX_VERT = 0.74;
+    public static final double BOX_SLANT = 0.64;
+    public static final double BOX_HORIZ = 0.44;
+    public static final double BOX_OUT = 0.34;
 
     public static final double[] SLIDE_STAGES = {};
 
@@ -41,11 +43,14 @@ public class CompetitionBot {
         BoxServo = hwMap.servo.get("Box");
 
         // Drive Train Directions
-        RFmotor.setDirection(DcMotor.Direction.REVERSE);
-        RBmotor.setDirection(DcMotor.Direction.REVERSE);
+//        RFmotor.setDirection(DcMotor.Direction.FORWARD);
+//        RBmotor.setDirection(DcMotor.Direction.FORWARD);
+        LFmotor.setDirection(DcMotor.Direction.REVERSE);
+        LBmotor.setDirection(DcMotor.Direction.REVERSE);
+        DuckWheel.setDirection(DcMotor.Direction.REVERSE);
 
         // Servo Initial Positions
-
+        BoxServo.setPosition(BOX_VERT);
 
         telemetry.addData("Status", "Successfully Initialized");
         telemetry.update();
@@ -54,16 +59,13 @@ public class CompetitionBot {
     public double[] tankMove(double joystickMove, double joystickTurn, Telemetry telemetry) {
         double SPEED_REDUCTION = MAX_SPEED;
 
-        double L = joystickMove * joystickMove + (0.5*joystickTurn);
-        double R = joystickMove * joystickMove - (0.5*joystickTurn);
-
-        L *= SPEED_REDUCTION;
-        R *= SPEED_REDUCTION;
+        double L = joystickMove * Math.abs(joystickMove) - (0.4 * joystickTurn);
+        double R = joystickMove * Math.abs(joystickMove) + (0.4 * joystickTurn);
 
         double[] powerVals = {L, R};
 
-        L *= clamp(powerVals);
-        R *= clamp(powerVals);
+        L *= clamp(powerVals) * SPEED_REDUCTION;
+        R *= clamp(powerVals) * SPEED_REDUCTION;
 
         setMotors(L, R);
 
@@ -71,7 +73,7 @@ public class CompetitionBot {
     }
 
     private double clamp(double[] powerVals) {
-        double max = Math.max(Math.max(powerVals[0], powerVals[1]), Math.max(powerVals[2], powerVals[3]));
+        double max = Math.max(powerVals[0], powerVals[1]);
         if (max > 1) {
             return 1 / max;
         } else {

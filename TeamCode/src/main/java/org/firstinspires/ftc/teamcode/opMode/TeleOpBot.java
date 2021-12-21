@@ -83,15 +83,17 @@ public class TeleOpBot extends LinearOpMode {
             else robot.Intake.setPower(0);
 
             // Deposit
-            if (depositButton.pressed) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
-            else robot.BoxServo.setPosition(CompetitionBot.BOX_IN);
+            if (depositButton.test == 0) robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
+            else if (depositButton.test == 1) robot.BoxServo.setPosition(CompetitionBot.BOX_SLANT);
+            else if (depositButton.test == 2) robot.BoxServo.setPosition(CompetitionBot.BOX_HORIZ);
+            else if (depositButton.test == 3) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
 
             // Ducks
-            if (duckButton.pressed) robot.Intake.setPower(CompetitionBot.DUCK_POWER);
-            else robot.Intake.setPower(0);
+            if (duckButton.pressed) robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
+            else robot.DuckWheel.setPower(0);
 
             // Linear Slide
-            if (slide>.1) robot.LinearSlide.setPower(slide);
+            if (slide>.1 || slide <.1) robot.LinearSlide.setPower(slide);
             else robot.LinearSlide.setPower(0);
         }
     }

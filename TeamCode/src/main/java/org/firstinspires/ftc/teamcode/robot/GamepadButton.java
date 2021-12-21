@@ -4,9 +4,11 @@ public class GamepadButton {
     public boolean pressed = false;
     public boolean buttonStatus = false;
     public boolean justPressed = false;
+    public int test = 0;
     private int delay;
     private long startTime;
     private boolean isToggled;
+
 
     public GamepadButton(int delay, boolean isToggled) {
         this.delay = delay;
@@ -21,6 +23,8 @@ public class GamepadButton {
             startTime = System.nanoTime()/1000000;
             pressed = !pressed;
             justPressed = true;
+            test += 1;
+            test %= 4;
         }
     }
 
