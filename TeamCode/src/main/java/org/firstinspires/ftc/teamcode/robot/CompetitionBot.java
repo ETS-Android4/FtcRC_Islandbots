@@ -17,8 +17,9 @@ public class CompetitionBot {
 
     // Constants
     public static final double MAX_SPEED = 0.7;
+    public static final double TURN_SPEED = 0.7;
 
-    public static final double DUCK_POWER = 0.7;
+    public static final double DUCK_POWER = 1;
 
     public static final double INTAKE_POWER = 1;
 
@@ -26,6 +27,7 @@ public class CompetitionBot {
     public static final double BOX_SLANT = 0.64;
     public static final double BOX_HORIZ = 0.44;
     public static final double BOX_OUT = 0.34;
+    public static final double BOX_OUT2 = 0.20;
 
     public static final double[] SLIDE_STAGES = {};
 
@@ -59,8 +61,8 @@ public class CompetitionBot {
     public double[] tankMove(double joystickMove, double joystickTurn, Telemetry telemetry) {
         double SPEED_REDUCTION = MAX_SPEED;
 
-        double L = joystickMove * Math.abs(joystickMove) - (0.4 * joystickTurn);
-        double R = joystickMove * Math.abs(joystickMove) + (0.4 * joystickTurn);
+        double L = joystickMove * Math.abs(joystickMove) - (TURN_SPEED * joystickTurn);
+        double R = joystickMove * Math.abs(joystickMove) + (TURN_SPEED * joystickTurn);
 
         double[] powerVals = {L, R};
 

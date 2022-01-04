@@ -39,18 +39,17 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.robot.CompetitionBot;
 import org.firstinspires.ftc.teamcode.robot.GamepadButton;
 
-@TeleOp(name="TeleOpBot", group="Linear Opmode")
+@TeleOp(name="TeleOpBot", group="TeleOp")
 //@Disabled
-//test to see if Katya's android studio works
 public class TeleOpBot extends LinearOpMode {
 
     @Override
     public void runOpMode() {
         CompetitionBot robot = new CompetitionBot(hardwareMap, telemetry);
 
-        GamepadButton intakeButton = new GamepadButton(300, false);
-        GamepadButton depositButton = new GamepadButton(300, false);
-        GamepadButton duckButton = new GamepadButton(300, false);
+        GamepadButton intakeButton = new GamepadButton(2);
+        GamepadButton depositButton = new GamepadButton(5);
+        GamepadButton duckButton = new GamepadButton(2);
 
         waitForStart();
 
@@ -61,36 +60,31 @@ public class TeleOpBot extends LinearOpMode {
             double rotation = gamepad1.right_stick_x;
 
             // Gamepad 2: Utility
-            boolean intakeBool = gamepad2.a;
-
-            boolean depositBool = gamepad2.b;
-
-            boolean duckBool = gamepad2.y;
-
             double slide = gamepad2.left_stick_y;
 //            boolean slideUpBool = gamepad2.dpad_up;
 //            boolean slideDownBool = gamepad2.dpad_down;
 
             // Button Updates
-            intakeButton.checkStatus(intakeBool);
-            depositButton.checkStatus(depositBool);
-            duckButton.checkStatus(duckBool);
+            intakeButton.update(gamepad2.a);
+            depositButton.update(gamepad2.b);
+            duckButton.update(gamepad2.y);
 
             // Motion
             robot.tankMove(motion, rotation, telemetry);
 
             // Intake
-            if (intakeButton.pressed) robot.Intake.setPower(CompetitionBot.INTAKE_POWER);
+            if (intakeButton.toggle == 1) robot.Intake.setPower(CompetitionBot.INTAKE_POWER);
             else robot.Intake.setPower(0);
 
             // Deposit
-            if (depositButton.test == 0) robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
-            else if (depositButton.test == 1) robot.BoxServo.setPosition(CompetitionBot.BOX_SLANT);
-            else if (depositButton.test == 2) robot.BoxServo.setPosition(CompetitionBot.BOX_HORIZ);
-            else if (depositButton.test == 3) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
+            if (depositButton.toggle == 0) robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
+            else if (depositButton.toggle == 1) robot.BoxServo.setPosition(CompetitionBot.BOX_SLANT);
+            else if (depositButton.toggle == 2) robot.BoxServo.setPosition(CompetitionBot.BOX_HORIZ);
+            else if (depositButton.toggle == 3) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
+            else if (depositButton.toggle == 4) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT2);
 
             // Ducks
-            if (duckButton.pressed) robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
+            if (duckButton.toggle == 1) robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
             else robot.DuckWheel.setPower(0);
 
             // Linear Slide

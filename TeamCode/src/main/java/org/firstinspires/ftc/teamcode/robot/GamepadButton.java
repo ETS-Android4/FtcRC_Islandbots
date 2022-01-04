@@ -1,44 +1,18 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 public class GamepadButton {
-    public boolean pressed = false;
-    public boolean buttonStatus = false;
-    public boolean justPressed = false;
-    public int test = 0;
-    private int delay;
-    private long startTime;
-    private boolean isToggled;
 
+    private int toggleMax;
+    public boolean isHeld;
+    public int toggle = 0;
 
-    public GamepadButton(int delay, boolean isToggled) {
-        this.delay = delay;
-        this.isToggled = isToggled;
-    }
+    public GamepadButton(int toggleNum) {toggleMax = toggleNum;}
 
-    public void checkStatus(boolean buttonStatus) {
-        if(isToggled) buttonStatus = !buttonStatus;
-        this.buttonStatus = buttonStatus;
-        if(justPressed) justPressed = false;
-        if(buttonStatus && (System.nanoTime()/1000000 - startTime) > delay) {
-            startTime = System.nanoTime()/1000000;
-            pressed = !pressed;
-            justPressed = true;
-            test += 1;
-            test %= 4;
+    public void update(boolean button) {
+        if (button && !isHeld) {
+            toggle += 1;
+            toggle %= toggleMax;
         }
+        isHeld = button;
     }
-
-//    public boolean isHeld;
-//    public boolean isToggled;
-//    public boolean isPressed;
-//
-//    public GamepadButton() { }
-//
-//    public void update(boolean button) {
-//        if (button && !isHeld) {
-//            isPressed = true;
-//            isToggled = !isToggled;
-//        }
-//        isHeld = button;
-//    }
 }
