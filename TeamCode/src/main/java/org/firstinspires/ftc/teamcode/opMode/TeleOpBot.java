@@ -48,8 +48,12 @@ public class TeleOpBot extends LinearOpMode {
         CompetitionBot robot = new CompetitionBot(hardwareMap, telemetry);
 
         GamepadButton intakeButton = new GamepadButton(2);
-        GamepadButton depositButton = new GamepadButton(5);
+        GamepadButton depositButton = new GamepadButton(4);
         GamepadButton duckButton = new GamepadButton(2);
+        GamepadButton capButton = new GamepadButton(2);
+
+        GamepadButton slideUpButton = new GamepadButton(2);
+        GamepadButton slideDownButton = new GamepadButton(2);
 
         waitForStart();
 
@@ -61,27 +65,36 @@ public class TeleOpBot extends LinearOpMode {
 
             // Gamepad 2: Utility
             double slide = gamepad2.left_stick_y;
-//            boolean slideUpBool = gamepad2.dpad_up;
-//            boolean slideDownBool = gamepad2.dpad_down;
+
 
             // Button Updates
             intakeButton.update(gamepad2.a);
             depositButton.update(gamepad2.b);
             duckButton.update(gamepad2.y);
+            capButton.update(gamepad2.x);
+
+            slideUpButton.update(gamepad2.dpad_up);
+            slideDownButton.update(gamepad2.dpad_down);
 
             // Motion
-            robot.tankMove(motion, rotation, telemetry);
+            boolean slowMode = gamepad1.left_trigger > 0.5;
+            boolean fastMode = gamepad1.right_trigger > 0.5;
+            robot.tankMove(motion, rotation, fastMode, slowMode, telemetry);
 
             // Intake
-            if (intakeButton.toggle == 1) robot.Intake.setPower(CompetitionBot.INTAKE_POWER);
+            boolean reverseIntake = gamepad2.right_trigger > 0.5;
+            if (intakeButton.toggle == 1) {
+                if (reverseIntake) robot.Intake.setPower(-CompetitionBot.INTAKE_POWER);
+                else robot.Intake.setPower(CompetitionBot.INTAKE_POWER);
+            }
             else robot.Intake.setPower(0);
 
             // Deposit
-            if (depositButton.toggle == 0) robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
+            if (capButton.toggle == 1) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT2);
+            else if (depositButton.toggle == 0) robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
             else if (depositButton.toggle == 1) robot.BoxServo.setPosition(CompetitionBot.BOX_SLANT);
             else if (depositButton.toggle == 2) robot.BoxServo.setPosition(CompetitionBot.BOX_HORIZ);
             else if (depositButton.toggle == 3) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT);
-            else if (depositButton.toggle == 4) robot.BoxServo.setPosition(CompetitionBot.BOX_OUT2);
 
             // Ducks
             if (duckButton.toggle == 1) robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
@@ -90,6 +103,24 @@ public class TeleOpBot extends LinearOpMode {
             // Linear Slide
             if (slide>.1 || slide <.1) robot.LinearSlide.setPower(slide);
             else robot.LinearSlide.setPower(0);
+            telemetry.addData("Slide: ", robot.LinearSlide.getCurrentPosition());
+            telemetry.update();
+
+            // Linear Slide 2
+
+//            int target;
+//            int pos = robot.LinearSlide.getCurrentPosition();
+//            telemetry.addData("Slide: ", robot.LinearSlide.getCurrentPosition());
+//            telemetry.update();
+//
+//            if (slideUpButton.toggle == 1) target = 2000;
+//            else target = -50;
+//
+//            if (pos > target + 25) robot.LinearSlide.setPower(-0.5);
+//            else if (pos < target - 25) robot.LinearSlide.setPower(0.5);
+//            else robot.LinearSlide.setPower(0);
+
+
         }
     }
 }
