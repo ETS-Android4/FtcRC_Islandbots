@@ -47,18 +47,33 @@ import static java.lang.Math.abs;
 
 @Autonomous(name="AutonomousBot", group="Autonomous")
 //@Disabled
-public abstract class AutonomousBot extends LinearOpMode {
+public class AutonomousBot extends LinearOpMode {
     protected CompetitionBot robot;
 
     @Override
     public void runOpMode() {
+        robot = new CompetitionBot(hardwareMap, telemetry);
+
         waitForStart();
-        forward(.5, 100, telemetry);
+
+        telemetry.addData("Status", "Autonomous Starts");
+        telemetry.update();
+
+        forward(.5, 5, telemetry);
+
+        sleep(1000);
+
+        turnBy(.5,90, telemetry);
+
+        sleep(1000);
+
+        forward(.5, 10, telemetry);
+
+        sleep(1000);
     }
 
-    public void forward(double speed, double revCount, Telemetry telemetry) {
-        //int stepCount = (int) (revCount*CompetitionBot.DRIVETAIN_PPR);
-        int stepCount = (int) revCount;
+    public void forward(double speed, double inchDistance, Telemetry telemetry) {
+        int stepCount = (int) (inchDistance*CompetitionBot.IN_TO_POS);
         int avgPos = (int) avgMotorPos();
         int initPos = avgPos;
         int referencePos = avgPos;
@@ -95,7 +110,6 @@ public abstract class AutonomousBot extends LinearOpMode {
             if (collisionDetected && currentTime - initCollisionTime > 1000) {
                 break;
             }
-
 
             rampedSpeed = rampSpeed(avgPos, initPos, targetPos, speed, .05, true);
 
