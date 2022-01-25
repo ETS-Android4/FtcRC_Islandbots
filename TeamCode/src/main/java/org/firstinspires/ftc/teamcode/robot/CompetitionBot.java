@@ -28,7 +28,7 @@ public class CompetitionBot {
     public static final double SLOW_SPEED = 0.2;
     public static final double TURN_SPEED = 0.7;
 
-    public static final double IN_TO_POS = 100;
+    public static final double IN_TO_POS = 12;
 
     public static final double DUCK_POWER = .75;
 
@@ -37,7 +37,7 @@ public class CompetitionBot {
     public static final double BOX_VERT = 0.74;
     public static final double BOX_SLANT = 0.64;
     public static final double BOX_HORIZ = 0.44;
-    public static final double BOX_OUT = 0.34;
+    public static final double BOX_OUT = 0.3;
     public static final double BOX_OUT2 = 0.16;
 
     public static final double[] SLIDE_STAGES = {};

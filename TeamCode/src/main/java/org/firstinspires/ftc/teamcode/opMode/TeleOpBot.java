@@ -55,6 +55,10 @@ public class TeleOpBot extends LinearOpMode {
         GamepadButton slideUpButton = new GamepadButton(2);
         GamepadButton slideDownButton = new GamepadButton(2);
 
+        GamepadButton betterDuckButton = new GamepadButton(2);
+
+        boolean betterDuckBool = false;
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -75,6 +79,8 @@ public class TeleOpBot extends LinearOpMode {
 
             slideUpButton.update(gamepad2.dpad_up);
             slideDownButton.update(gamepad2.dpad_down);
+
+            betterDuckButton.update(gamepad2.left_bumper);
 
             // Motion
             boolean slowMode = gamepad1.left_trigger > 0.5;
@@ -99,6 +105,12 @@ public class TeleOpBot extends LinearOpMode {
             // Ducks
             if (duckButton.toggle == 1) robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
             else robot.DuckWheel.setPower(0);
+
+            if(betterDuckButton.isJustPressed) betterDuckBool = true;
+            if(betterDuckBool) {
+                telemetry.addData("Status", "Ducks Activated");
+                telemetry.update();
+            }
 
             // Linear Slide
             if (slide>.1 || slide <.1) robot.LinearSlide.setPower(slide);

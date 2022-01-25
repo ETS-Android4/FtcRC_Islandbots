@@ -56,20 +56,51 @@ public class AutonomousBot extends LinearOpMode {
 
         waitForStart();
 
-        telemetry.addData("Status", "Autonomous Starts");
+        redCarouselAuto();
+    }
+
+    public void testAuto(){
+        forward(.3,48,telemetry);
+        forward(.3,48,telemetry);
+        forward(.3,48,telemetry);
+
+        telemetry.addData("Status", "Forward Motion Complete");
         telemetry.update();
+    }
 
-        forward(.5, 5, telemetry);
+    public void redCarouselAuto(){
+        forward(.3, 3.5, telemetry);
+        turnBy(.4,273, telemetry);
+        backward(.2, 12, telemetry);
+        robot.setMotors(.12,.12);
 
+        sleep(500);
+        robot.setMotors(0,0);
+
+        robot.DuckWheel.setPower(CompetitionBot.DUCK_POWER);
+        sleep(2500);
+        robot.DuckWheel.setPower(0);
+
+        turnBy(.4,2.2, telemetry);
+        forward(.3,41, telemetry);
+        turnBy(.4,267, telemetry);
+        backward(.25, 12, telemetry);
+        robot.setMotors(.1,.1);
+        sleep(500);
+        robot.setMotors(0,0);
+
+        robot.LinearSlide.setPower(.8);
         sleep(1000);
-
-        turnBy(.5,90, telemetry);
-
+        robot.LinearSlide.setPower(0);
+        robot.BoxServo.setPosition(.25);
         sleep(1000);
+        robot.BoxServo.setPosition(CompetitionBot.BOX_VERT);
+        robot.LinearSlide.setPower(-.8);
+        sleep(900);
+        robot.LinearSlide.setPower(0);
 
-        forward(.5, 10, telemetry);
-
-        sleep(1000);
+        turnBy(.2,80, telemetry);
+        forward(.8, 60, telemetry);
     }
 
     public void forward(double speed, double inchDistance, Telemetry telemetry) {
@@ -107,18 +138,67 @@ public class AutonomousBot extends LinearOpMode {
             if (collisionDetected && currentVel > 100) {
                 collisionDetected = false;
             }
-            if (collisionDetected && currentTime - initCollisionTime > 1000) {
+            if (collisionDetected && currentTime - initCollisionTime > 400) {
                 break;
             }
 
-            rampedSpeed = rampSpeed(avgPos, initPos, targetPos, speed, .05, true);
+            rampedSpeed = rampSpeed(avgPos, initPos, targetPos, speed, .1, true);
+
+            telemetry.addData("rampedSpeed: ", rampedSpeed);
+            telemetry.update();
+
+            robot.setMotors(-clamp(rampedSpeed), -clamp(rampedSpeed));
+        }
+        stopMotors(250);
+    }
+
+    public void backward(double speed, double inchDistance, Telemetry telemetry) {
+        int stepCount = (int) (inchDistance*CompetitionBot.IN_TO_POS);
+        int avgPos = (int) avgMotorPos();
+        int initPos = avgPos;
+        int referencePos = avgPos;
+        int targetPos = avgPos - stepCount;
+
+        double initTime = System.currentTimeMillis();
+        double initCollisionTime = 0;
+        double currentTime;
+        double currentVel = 0;
+
+        boolean collisionDetected = false;
+
+        double rampedSpeed;
+        while (opModeIsActive() && avgPos > targetPos) {
+            avgPos = (int) avgMotorPos();
+
+            currentTime = System.currentTimeMillis();
+            telemetry.addData("time: ", currentTime - initTime);
+
+            // Calculating encoder velocity and checking for collision
+            if (currentTime - initTime > 100) {
+                currentVel = abs(avgPos - referencePos) / .1;
+                initTime = currentTime;
+                referencePos = avgPos;
+            }
+            telemetry.addData("currentVel: ", currentVel);
+            if (!collisionDetected && currentVel < 50) {
+                initCollisionTime = currentTime;
+                collisionDetected = true;
+            }
+            if (collisionDetected && currentVel > 100) {
+                collisionDetected = false;
+            }
+            if (collisionDetected && currentTime - initCollisionTime > 400) {
+                break;
+            }
+
+            rampedSpeed = rampSpeed(avgPos, initPos, targetPos, speed, .1, true);
 
             telemetry.addData("rampedSpeed: ", rampedSpeed);
             telemetry.update();
 
             robot.setMotors(clamp(rampedSpeed), clamp(rampedSpeed));
         }
-        robot.setMotors(0,0);
+        stopMotors(250);
     }
 
     public void turnBy(double maxSpeed, double deltaAngle, Telemetry telemetry) {
@@ -130,7 +210,7 @@ public class AutonomousBot extends LinearOpMode {
         double rampStart = .75;
 
 
-        while (Math.abs(diff) > .75) {
+        while (opModeIsActive() && Math.abs(diff) > .75) {
             currentAngle = robot.getPitch();
             diff = angleDiff(currentAngle, targetAngle);
 
@@ -139,7 +219,7 @@ public class AutonomousBot extends LinearOpMode {
 
             if (Math.abs(diff) < rampStart * deltaAngle) {
                 if (Math.abs(diff) < 2) speed = .125;
-                else speed = Math.min(0.5 * maxSpeed * (diff / (0.5*deltaAngle)),.125);
+                else speed = Math.min(maxSpeed * (Math.abs(diff) / deltaAngle),.75);
             }
 
             speed *= dir;
